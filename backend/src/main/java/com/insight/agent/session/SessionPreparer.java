@@ -42,15 +42,16 @@ public class SessionPreparer {
         UUID sessionId = sessions.ensure(rawSessionId);
         SessionService.State state = sessions.load(sessionId);
 
-        boolean hasExplicitScope = false;
+        Map<String, String> explicitScope = new HashMap<>();
         try {
-            hasExplicitScope = !scopeParser.parse(question).filters().isEmpty();
+            scopeParser.parse(question).filters()
+                    .forEach((dimension, value) -> explicitScope.put(dimension.name(), value));
         } catch (AmbiguousScopeException e) {
             // 指代歧义交给服务层抛标准错误码（AMBIGUOUS_SCOPE），补全不掺和
         }
 
         FollowUpCompleter.Completion completion = completer.complete(
-                question, state, hasExplicitScope, MetricRouter.mentionsMetric(question));
+                question, state, explicitScope, MetricRouter.mentionsMetric(question));
         if (completion.kind() == FollowUpCompleter.Kind.CLARIFY) {
             return new Prepared(sessionId, question, null, completion.note());
         }

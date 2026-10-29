@@ -1,6 +1,6 @@
 <p align="right"><a href="README.md">English</a> | <a href="README.zh-CN.md"><b>简体中文</b></a></p>
 
-# 🧭 insight-agent
+# 🧭 运营归因智能体
 
 一个面向本地生活业务数据的**运营归因 Agent**。你问「上周华东 GMV 为什么跌了」，它给出可回溯的下钻
 路径和三段式结论 —— **事实 / 推测 / 不确定** —— 每一条事实都绑定在产生它的那次查询上。
@@ -16,7 +16,7 @@
 ![Vue](https://img.shields.io/badge/Vue-3.5-42b883?logo=vue.js&logoColor=white)
 ![Docker Compose](https://img.shields.io/badge/Docker%20Compose-ready-2496ED?logo=docker&logoColor=white)
 
-[![Backend CI](https://github.com/SHADE-glitch/insight-agent/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/SHADE-glitch/insight-agent/actions/workflows/backend-ci.yml)
+[![Backend CI](https://github.com/SHADE-glitch/yunying-guiyin-zhinengti/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/SHADE-glitch/yunying-guiyin-zhinengti/actions/workflows/backend-ci.yml)
 
 **这是什么** —— 一个 Spring Boot 3.5 服务加一个 Vue 3 控制台，数据侧是 PostgreSQL 16（pgvector +
 pg_trgm），Agent 循环手写、结论走 SSE 流式推送、业务表由只读数据库账号访问。
@@ -53,7 +53,7 @@ token 用量与 SQL 指纹。客户端断开即停止，不再继续打库。
 
 ### 3. 中文无分词器下的混合检索
 向量路用 pgvector HNSW，关键词路用 pg_trgm 三元组（中文没有现成分词器），两路 RRF 融合。检索质量在
-40 条人工标注集上度量 —— recall@5 与 MRR 均为 0.988 —— 三种检索模式可以一键并排复跑。
+40 条人工标注集上度量 —— recall@5 与 MRR 均为 0.9875 —— 三种检索模式可以一键并排复跑。
 
 ### 4. 三层并列的护栏
 入口越界守卫（三值枚举：在范围内 / 越界 / 需澄清，循环开始前判定）、SqlGuard 四层静态校验、以及物理上
@@ -121,13 +121,14 @@ docker-compose.yml   PostgreSQL 16 + pgvector
 
 | 指标 | 值 |
 |---|---|
-| 后端测试 | 183 项通过 |
-| 检索 recall@5 / MRR | 0.988 / 0.988（40 条人工标注） |
-| Agent 评测，路径与叶子准确率 | 30 条任务级用例 100% |
-| 单次运行成本 | 平均 2.7 步 / 4.4k token |
-| 延迟 | 本地全库 p50 3 秒 / p90 约 10 秒 |
+| 后端测试 | 32 类 / 211 项通过 |
+| 检索 recall@5 / MRR | 0.9875 / 0.9875（40 条人工标注） |
+| Agent 评测 | 42 / 42 主集合 |
+| Holdout | 会话范围继承修复后 13 / 13（首轮 10 / 13） |
+| 单次运行成本 | 平均 2.4 步 / 约 3.9k token |
+| 消融 | depth=1 仅 36 / 42，被门禁拦下；省 token 变体未设为默认 |
 
-以上是单机本地结果，不是生产基准。
+以上为 2026-10-29 批次、单机本地种子数据的结果，不是生产基准；holdout 与 42 条调优集分开，未参与提示词调优。
 
 ## 📄 许可证
 

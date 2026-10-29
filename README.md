@@ -1,6 +1,6 @@
 <p align="right"><a href="README.md"><b>English</b></a> | <a href="README.zh-CN.md">简体中文</a></p>
 
-# 🧭 insight-agent
+# 🧭 运营归因智能体 (Operational Attribution Agent)
 
 An **operational attribution agent** for local-life business data. You ask *"why did East-China GMV
 drop last week?"* and it answers with a drill-down path you can trace and a three-part conclusion —
@@ -18,7 +18,7 @@ probe budgets, and every SQL guardrail are deterministic code, not prompt instru
 ![Vue](https://img.shields.io/badge/Vue-3.5-42b883?logo=vue.js&logoColor=white)
 ![Docker Compose](https://img.shields.io/badge/Docker%20Compose-ready-2496ED?logo=docker&logoColor=white)
 
-[![Backend CI](https://github.com/SHADE-glitch/insight-agent/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/SHADE-glitch/insight-agent/actions/workflows/backend-ci.yml)
+[![Backend CI](https://github.com/SHADE-glitch/yunying-guiyin-zhinengti/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/SHADE-glitch/yunying-guiyin-zhinengti/actions/workflows/backend-ci.yml)
 
 **What it is** — a Spring Boot 3.5 service plus a Vue 3 console over PostgreSQL 16 (pgvector +
 pg_trgm), with a hand-written agent tool loop, SSE streaming and a read-only database role.
@@ -63,7 +63,7 @@ incomplete the model is not called at all.
 ### 3. Hybrid retrieval without a Chinese tokenizer
 pgvector HNSW for the vector path, pg_trgm trigrams for the keyword path (no word segmenter is
 available for Chinese), fused with RRF. Retrieval quality is measured on a 40-query hand-labelled
-set — recall@5 and MRR are both 0.988 — and the three retrieval modes can be re-run side by side.
+set — recall@5 and MRR are both 0.9875 — and the three retrieval modes can be re-run side by side.
 
 ### 4. Three parallel guardrail layers
 An entry scope guard (three-valued enum: in scope / out of scope / needs clarification, evaluated
@@ -136,13 +136,15 @@ docker-compose.yml   PostgreSQL 16 + pgvector
 
 | Figure | Value |
 |---|---|
-| Backend tests | 183 passing |
-| Retrieval recall@5 / MRR | 0.988 / 0.988 on 40 hand-labelled queries |
-| Agent eval, path & leaf accuracy | 100% over 30 task-level cases |
-| Per-run cost | 2.7 steps / 4.4k tokens on average |
-| Latency | p50 3 s / p90 ~10 s against the local full dataset |
+| Backend tests | 32 classes / 211 passing |
+| Retrieval recall@5 / MRR | 0.9875 / 0.9875 on 40 hand-labelled queries |
+| Agent eval | 42 / 42 main cases |
+| Holdout | 13 / 13 after the session-scope fix (10 / 13 on the first pass) |
+| Per-run cost | 2.4 steps / ~3.9k tokens on average |
+| Ablation | depth=1 36 / 42, rejected by the gate; token-saving variants not made default |
 
-These are local results on one machine, not a production benchmark.
+These are local results on one machine (2026-10-29 batch, local seed data), not a production benchmark.
+The holdout set is separate from the 42 tuning cases and was not used to tune prompts.
 
 ## 📄 License
 
