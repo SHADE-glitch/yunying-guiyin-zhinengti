@@ -1,0 +1,5 @@
+agent:
+  attribution:
+    # mock 没有真模型：canned 回复不符合 propose_dimension 的 schema，
+    # 会被判连续无效提议提前出局。离线演示走规则版提议器，跑完整下钻链路。
+    model-proposer-enabled: false

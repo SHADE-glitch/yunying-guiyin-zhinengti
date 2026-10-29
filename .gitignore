@@ -1,0 +1,19 @@
+target/
+.idea/
+*.iml
+.env
+*.log
+.DS_Store
+
+# 机器级运行态忽略（STANDARD.md §4）
+.venv/
+venv/
+__pycache__/
+*.db
+*.db-wal
+*.db-shm
+.pytest_cache/
+reports/
+
+# Playwright CLI snapshots (runtime)
+.playwright-cli/

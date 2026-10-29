@@ -1,0 +1,94 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: insight-agent
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/insight}
+    # 运行时账号：业务表只读，trace 三表可写（见 V6__readonly_role.sql）。
+    # 模型发出的 SQL 走的就是这个连接——即使 SqlGuard 被绕过，数据库层仍限制在业务表只读。
+    username: ${DB_USER:insight_ro}
+    password: ${DB_PASSWORD:insight_ro}
+    hikari:
+      maximum-pool-size: 8
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    # 迁移用 owner 跑：建表、建角色都是 DDL 权限
+    user: ${DB_OWNER_USER:insight}
+    password: ${DB_OWNER_PASSWORD:insight}
+  ai:
+    openai:
+      base-url: ${LLM_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+      api-key: ${LLM_API_KEY:sk-not-set}
+      embedding:
+        # 同上：base-url 已含 /v1
+        embeddings-path: /embeddings
+        options:
+          model: ${EMBEDDING_MODEL:text-embedding-v4}
+      chat:
+        # base-url 已含 /v1，这里必须覆盖默认值，否则会拼成 /v1/v1/chat/completions
+        completions-path: /chat/completions
+        options:
+          model: ${LLM_MODEL:deepseek-v4.1-flash}
+          temperature: 0
+          # 该模型是 reasoning 模型，推理 token 也计入 max_tokens。
+          # 给低了会出现 finish_reason=length 且 content 为空。
+          max-tokens: 4096
+
+agent:
+  # 30 条任务级评测平均 2.7 步；曾有单例烧满 6 步（MAX_STEPS），12 给足余量。熔断不是省钱。
+  max-steps: ${AGENT_MAX_STEPS:12}
+  # 单次提问的 token 上限（0 表示不限制）。超了就不再发下一次模型请求，如实返回失败原因
+  token-budget: ${AGENT_TOKEN_BUDGET:120000}
+  sql-timeout-seconds: 10
+  max-rows: 200
+  reflection:
+    # 单次失败交给模型自己改；连续失败才说明它卡在同一个错误假设上
+    failure-threshold: 2
+    max-rounds: 2
+  embedding:
+    # 启动时补齐 knowledge_doc 里缺失的向量
+    seed: ${EMBEDDING_SEED:false}
+  attribution:
+    # ---- 查询资源 ----
+    # 默认归因指标。问题里点名哪个可加指标（gmv / 订单量）就按哪个归因（MetricRouter），
+    # 没点名用这里的默认值；加新指标要同时改 SqlSplitProvider.valueExpression
+    metric: gmv
+    # 本期窗口长度（天），基期是紧邻的等长窗口
+    window-days: 30
+    # 单次归因允许打到数据库的查询次数上限。执行前扣减，是硬约束不是估算。
+    # 0 表示按 1 + max-probes × 3 推导（典型的 2 探针归因实际消耗 5 次）
+    query-budget: ${AGENT_ATTRIBUTION_QUERY_BUDGET:0}
+    # 单次归因的 token 上限（0 表示不限制）。超了提议降级为规则版、结论降级为计算结果，不报错
+    token-budget: ${AGENT_ATTRIBUTION_TOKEN_BUDGET:20000}
+    # 分组查询行数上限。门店维度必须拿全量才能算对"其他"，触顶直接判失败
+    probe-max-rows: 1000
+    # 单条归因查询超时（秒）
+    timeout-seconds: 10
+    # ---- 判定阈值 ----
+    # 下钻层数，根节点不计。每多一层就多一次全量分组查询
+    max-depth: 2
+    # 一次归因最多做几次拆分探测
+    max-probes: 8
+    # 子项贡献度达到多少才算"主要变化来源"（只说明值得继续查，不是根本原因）
+    threshold: 0.6
+    # 显著性门槛：相对变化
+    min-change-ratio: 0.03
+    # 基期为 0 时的绝对门槛
+    min-change-absolute: 100
+    # 完备性容差：|Σc − sign(Δ父)| 超过它判数据不完整
+    tolerance: 0.05
+    # 连续无效提议熔断阈值
+    invalid-proposal-limit: 3
+    # 同一维度连续失败几次标记耗尽
+    dimension-failure-limit: 2
+    # 高基数维度折叠后保留几个明细
+    top-n: 10
+    # 关掉则全程用规则版提议器（离线演示 / 回归用）
+    model-proposer-enabled: true
+
+logging:
+  level:
+    com.insight.agent: INFO

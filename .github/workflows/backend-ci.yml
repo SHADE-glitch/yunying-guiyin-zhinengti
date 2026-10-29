@@ -1,0 +1,28 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # The Maven module lives in backend/; the repository root holds the README pair and frontend/.
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+
+      # The suite starts its own PostgreSQL via Testcontainers (pgvector/pgvector:pg16),
+      # so no service container is declared here — the runner's docker socket is enough.
+      - name: Test
+        run: mvn -B test
