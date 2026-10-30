@@ -10,6 +10,9 @@ The governing rule is **the model proposes, the code decides**. The model may pr
 drill-down dimension per step, through a single-enum tool call. Contribution thresholds, depth and
 probe budgets, and every SQL guardrail are deterministic code, not prompt instructions.
 
+> **Public, code-only showcase.** This repository carries the runnable code and the stack. Full
+> development history, evaluation batches and interview notes live in a private archive.
+
 ![Java](https://img.shields.io/badge/Java-17-orange?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-brightgreen?logo=springboot&logoColor=white)
 ![Spring AI](https://img.shields.io/badge/Spring_AI-6DB33F?logo=spring&logoColor=white)
@@ -140,7 +143,7 @@ docker-compose.yml   PostgreSQL 16 + pgvector
 | Retrieval recall@5 / MRR | 0.9875 / 0.9875 on 40 hand-labelled queries |
 | Agent eval | 42 / 42 main cases |
 | Holdout | 13 / 13 after the session-scope fix (10 / 13 on the first pass) |
-| Per-run cost | 2.4 steps / ~3.9k tokens on average |
+| Per-run cost | 2.4 steps / ~3.9k tokens on average (post-fix batch; 2.7 steps on the baseline batch) |
 | Ablation | depth=1 36 / 42, rejected by the gate; token-saving variants not made default |
 
 These are local results on one machine (2026-10-29 batch, local seed data), not a production benchmark.

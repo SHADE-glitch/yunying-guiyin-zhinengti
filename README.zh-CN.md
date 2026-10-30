@@ -8,6 +8,8 @@
 核心设计是**模型提议、代码裁决**：模型每一步只能通过单枚举 tool-call 提议一个下钻维度；贡献度阈值、
 深度与探测预算、以及所有 SQL 护栏都是确定性代码，不是提示词里的叮嘱。
 
+> **公开的纯代码展示仓。** 本仓只保留可运行代码与技术栈；完整开发历史、评测批次与面试文档在私有归档中。
+
 ![Java](https://img.shields.io/badge/Java-17-orange?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-brightgreen?logo=springboot&logoColor=white)
 ![Spring AI](https://img.shields.io/badge/Spring_AI-6DB33F?logo=spring&logoColor=white)
@@ -125,7 +127,7 @@ docker-compose.yml   PostgreSQL 16 + pgvector
 | 检索 recall@5 / MRR | 0.9875 / 0.9875（40 条人工标注） |
 | Agent 评测 | 42 / 42 主集合 |
 | Holdout | 会话范围继承修复后 13 / 13（首轮 10 / 13） |
-| 单次运行成本 | 平均 2.4 步 / 约 3.9k token |
+| 单次运行成本 | 平均 2.4 步 / 约 3.9k token（修复后批次；基线批次 2.7 步） |
 | 消融 | depth=1 仅 36 / 42，被门禁拦下；省 token 变体未设为默认 |
 
 以上为 2026-10-29 批次、单机本地种子数据的结果，不是生产基准；holdout 与 42 条调优集分开，未参与提示词调优。

@@ -89,3 +89,51 @@ Cost     The engine's termination gate is locked decision logic; this is the one
          triggered by an evaluation case. Evaluation now spends real model quota and adds V8
          tables plus a two-worker async pool (queue capped at four); model aliases can drift, so
          batches record the exact model id (`deepseek-v4.1-flash-1017` here).
+
+### D-006 · 2026-10-29 · docs
+Symptom  The docs mixed current R9 metrics with W5-era numbers (183 tests, 30 cases, 0.988),
+         the résumé map still described five highlights, and old notes/design/eval material sat
+         in the live docs tree where readers could mistake it for current guidance.
+Change   Rebuild `docs/90-evidence/00-metrics-and-evidence.md` around the 2026-10-29 batches
+         (32 classes / 211 cases; 42/42 baseline and post-fix; holdout 10/13 → 13/13; retrieval
+         0.9875/0.9875; ablations). Rewrite the résumé review and map for the 4+4 R9 structure.
+         Add `docs/03-deepen/06-ai-code-review.md` with risk classes, eight-step acceptance and
+         an explicit Unconfirmed boundary for AI involvement. Move old notes, design drafts, W5
+         reports and the pre-R9 evidence snapshot under `docs/archive/2026-10/`, and point every
+         live page at the archive instead of the removed paths.
+Evidence Docs-only. 135 relative links resolve; the docs tree lists 35 of 35 Markdown files.
+         No Java source, migration, test or evaluation artifact was changed. Historical numbers
+         remain only in the archive or in sections labelled as historical.
+Cost     Readers who land on old bookmarks must follow one archive hop. The evidence index must
+         be refreshed again whenever a batch is rerun; copied numbers elsewhere are not current.
+
+Commit   MIRROR-COMMIT (mirror of the source repository's change)
+
+### D-007 · 2026-10-30 · docs
+Symptom  The docs tree still carried pre-restructure names and drifted facts: a `99-worklog/`
+         directory whose open items had no home, a `docs/eval/README.md` whose content had been
+         absorbed into `90-evidence/02-evaluation.md`, no shared self-intro page under
+         `04-interview/`, stale counts (AttributionEngineTest 15, FollowUpCompleterTest 7,
+         Flyway V1–V7), hard-coded commit totals (58/72), concrete model ids in prose, and an
+         evidence index that mixed full detail with indexing.
+Change   Finish the six-layer restructure. Add `04-interview/00-self-intro.md` (byte-identical
+         to the local-life copy). Add the 设计取舍 / 失败路径 rows to the four résumé cards and
+         the bagu / interview / journey cross-reference table to the résumé map. Correct counts
+         to AttributionEngineTest 16, FollowUpCompleterTest 11, Flyway V1–V8 (V8 eval tables
+         added to `01-orientation.md` and `04-data-model.md`). Replace hard-coded commit totals
+         with the `git log --oneline | wc -l` rule; drop concrete model ids from prose and defer
+         to each batch JSON's `model` field. Add the read-only knowledge-base anchor table
+         (file:// links) to `03-deepen/02-bagu-map.md`. Rewrite
+         `90-evidence/00-metrics-and-evidence.md` as a pure index over 01/02/03. Migrate the
+         worklog open items into `03-deepen/03-boundaries.md` §7, then delete `docs/99-worklog/`
+         and `docs/eval/`. Rewrite `docs/README.md`'s tree and entry points to the final layout.
+Evidence Docs-only; no Java source, migration, test or evaluation artifact touched. All 228
+         relative links across 37 docs Markdown files resolve (14 file:// knowledge-base links
+         counted, not resolved); the `docs/README.md` tree matches disk (48 entries). Local-life
+         guards re-run green: check_doc_links (552 links, 35/35 files), check_layout,
+         check_bilingual (3 pairs), check_backend_map.
+Cost     `docs/eval/README.md` and the worklog are gone; their content lives in
+         `02-evaluation.md` and `03-boundaries.md` §7 respectively. Root `README.md` remains a
+         placeholder by the owner's decision.
+
+Commit   MIRROR-COMMIT (mirror of the source repository's change)
