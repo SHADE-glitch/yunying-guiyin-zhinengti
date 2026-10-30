@@ -107,7 +107,7 @@ Evidence Docs-only. 135 relative links resolve; the docs tree lists 35 of 35 Mar
 Cost     Readers who land on old bookmarks must follow one archive hop. The evidence index must
          be refreshed again whenever a batch is rerun; copied numbers elsewhere are not current.
 
-Commit   MIRROR-COMMIT (mirror of the source repository's change)
+Commit   92ea0a1 (mirror of the source repository's change)
 
 ### D-007 · 2026-10-30 · docs
 Symptom  The docs tree still carried pre-restructure names and drifted facts: a `99-worklog/`
@@ -136,4 +136,4 @@ Cost     `docs/eval/README.md` and the worklog are gone; their content lives in
          `02-evaluation.md` and `03-boundaries.md` §7 respectively. Root `README.md` remains a
          placeholder by the owner's decision.
 
-Commit   MIRROR-COMMIT (mirror of the source repository's change)
+Commit   92ea0a1 (mirror of the source repository's change)
