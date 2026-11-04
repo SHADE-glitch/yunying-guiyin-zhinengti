@@ -8,7 +8,7 @@
 核心设计是**模型提议、代码裁决**：模型每一步只能通过单枚举 tool-call 提议一个下钻维度；贡献度阈值、
 深度与探测预算、以及所有 SQL 护栏都是确定性代码，不是提示词里的叮嘱。
 
-> **公开的纯代码展示仓。** 本仓只保留可运行代码与技术栈；完整开发历史、评测批次与面试文档在私有归档中。
+> **公开的纯代码展示仓。** 本仓只保留可运行代码与技术栈；
 
 ![Java](https://img.shields.io/badge/Java-17-orange?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-brightgreen?logo=springboot&logoColor=white)
