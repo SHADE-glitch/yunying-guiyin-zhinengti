@@ -11,7 +11,6 @@ drill-down dimension per step, through a single-enum tool call. Contribution thr
 probe budgets, and every SQL guardrail are deterministic code, not prompt instructions.
 
 > **Public, code-only showcase.** This repository carries the runnable code and the stack. Full
-> development history, evaluation batches and interview notes live in a private archive.
 
 ![Java](https://img.shields.io/badge/Java-17-orange?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-brightgreen?logo=springboot&logoColor=white)
