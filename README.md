@@ -27,6 +27,17 @@ pg_trgm), with a hand-written agent tool loop, SSE streaming and a read-only dat
 
 ---
 
+## 📖 Table of Contents
+
+- [🎯 The problem](#-the-problem)
+- [🔁 The loop](#-the-loop)
+- [🌟 Key engineering highlights](#-key-engineering-highlights)
+- [🧰 Tech stack](#-tech-stack)
+- [🚀 Quick start](#-quick-start)
+- [🗂️ Layout](#️-layout)
+- [📊 Measured (local, single machine)](#-measured-local-single-machine)
+- [📄 License](#-license)
+
 ## 🎯 The problem
 
 A dashboard tells you *that* GMV fell. It does not tell you *where* the fall came from, and a model
